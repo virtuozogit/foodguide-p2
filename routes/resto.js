@@ -24,23 +24,29 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/create', async (req, res) => {
     const resto = await Resto.findById(req.params.id)
-    const login = Login.findOne({})
-    const review = await Review.findOne({})
-    res.render('resto/create', {
-        login: login,
-        resto: resto,
-        review: review,
-        searchOptions: req.query
-    })
+    const login = await Login.findOne({})
+    const review = await Review.findOne({username: login.username, restoId: req.params.id})
+    
+    if (review == null) {
+        res.render('resto/create', {
+            login: login,
+            resto: resto,
+            review: review,
+            searchOptions: req.query
+        })
+    } else {
+        res.redirect(`/resto/${req.params.id}/edit`)
+    }
+    
 })
 
-// submit / edit / create the review
+// submit / create the review
 router.post('/:id/create', async (req, res) => {
     const login = await Login.findOne({})
     const review = await Review.findOne({username: login.username, restoId: req.params.id})
     const resto = await Resto.findOne({_id: req.params.id})
     const rating = Number(req.body.rating)
-
+    
     try {
         if (review == null) {
             const newReview = new Review({
@@ -49,7 +55,8 @@ router.post('/:id/create', async (req, res) => {
                 info: req.body.info,
                 restoId: req.params.id,
                 restoName: resto.name,
-                ownerName: resto.ownerName
+                ownerName: resto.ownerName,
+                review: review
             })
             
             console.log(req.params.id)
@@ -58,16 +65,53 @@ router.post('/:id/create', async (req, res) => {
 
             await newReview.save()
         } else {
-            review.rating = rating
-            saveFile(review, req.body.reviewFile) // error problem
-            review.info = req.body.info
-
-            await review.save()
+            res.redirect(`/resto/${req.params.id}/edit`)
         }   
         res.redirect(`/resto/${req.params.id}`)     
     } catch {
         console.log('error in upload')
         res.redirect(`/resto/${req.params.id}/create`)
+    }
+
+})
+
+// edit
+router.get('/:id/edit', async (req, res) => {
+    const resto = await Resto.findById(req.params.id)
+    const login = await Login.findOne({})
+    const review = await Review.findOne({username: login.username, restoId: req.params.id})
+    
+    res.render('resto/edit', {
+        login: login,
+        resto: resto,
+        review: review,
+        searchOptions: req.query
+    })
+    
+})
+
+router.post('/:id/edit', async (req, res) => {
+    const login = await Login.findOne({})
+    const review = await Review.findOne({username: login.username, restoId: req.params.id})
+    const resto = await Resto.findOne({_id: req.params.id})
+    const rating = Number(req.body.rating)
+    
+    try {
+        if (req.body.reviewFile != null) {
+            review.rating = rating
+            review.info = req.body.info
+            saveFile(review, req.body.reviewFile) 
+        } else {
+            review.rating = rating
+            review.info = req.body.info
+        }
+        
+        await review.save()
+        
+        res.redirect(`/resto/${req.params.id}`)     
+    } catch {
+        console.log('error in upload')
+        res.redirect(`/resto/${req.params.id}/edit`)
     }
 
 })

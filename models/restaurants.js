@@ -24,6 +24,12 @@ const restaurantSchema = new mongoose.Schema({
     },
     tags: {
         type: Array
+    },
+    file: {
+        type: Buffer,
+    },
+    fileType: {
+        type: String,
     }
 })
 

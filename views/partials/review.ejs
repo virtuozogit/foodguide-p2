@@ -19,7 +19,7 @@
       
       <a href="/user/<%= review.username %>" class="nav-link"><p class="text-secondary fw-bolder"><%= review.username %></p></a>
       <p class="text-truncate" id="com-1"><%= review.info %></p>
-      <button type="button" class="btn btn-primary mb-2" id="btn-com-1" data-bs-toggle="button">See more</button>
+      <button type="button" class="btn btn-primary mb-2" id="btn-truncate" data-bs-toggle="button">See more</button>
       <p class="fw-lighter">
         <form action="/resto/<%= review.restoId %>/add-help" method="post">
           <button type="submit" class="btn btn-primary m-1 btn-sm" id="btn-com-1" >👍</button> 
