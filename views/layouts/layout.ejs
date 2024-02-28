@@ -36,12 +36,15 @@
                           <li class="nav-item">
                             <a class="nav-link" href="/user/<%= login.username %>">Profile</a>
                           </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/login" id="login">Sign in</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="/logout">Log out</a>
-                          </li>
+                          <% if (!login.logged) {%>
+                            <li class="nav-item" id="nav-signin">
+                              <a class="nav-link" href="/login" id="login">Sign in</a>
+                            </li>
+                          <% } else { %>
+                            <li class="nav-item" id="nav-logout">
+                              <a class="nav-link" href="/logout">Log out</a>
+                            </li>
+                          <% } %>
                           <li class="nav-item">
                             <button class="nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
                               Filter
