@@ -25,6 +25,10 @@ router.get('/', async (req, res) => {
     const skipValue = (page - 1) * pageSize
     const log = await Login.findOne({})
     console.log(req.session)
+    console.log(`Current route: ${req.path}`);
+    log.currentRoute = req.path
+    await log.save()
+    console.log(`Logins route: ${req.path}`);
 
     // Update the ratings
     const restos = await Restaurant.find()
@@ -74,6 +78,9 @@ router.get('/', async (req, res) => {
             pageNum: login.pageNum
         })
         console.log('login: ' + login.username)
+        log.currentRoute = '';
+        await log.save()
+        console.log(`new Logins route: ${req.path}`);
     } catch {
         console.log('error')
         res.redirect('/')

@@ -22,6 +22,9 @@ const loginSchema = new mongoose.Schema({
     },
     restoQuery: {
         type: String
+    },
+    currentRoute: {
+        type: String
     }
 })
 
